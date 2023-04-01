@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+
+<!-- Rest of your FXML file -->
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="sagalabsmanagerclient.controllers.CaptureLabPopUp"
+            prefHeight="400.0" prefWidth="600.0"
+            stylesheets="@Stylesheet.css">
+    <Label text="Capture Lab" layoutX="20.0" layoutY="20.0">
+        <font>
+            <Font size="18.0" />
+        </font>
+    </Label>
+
+    <TextField fx:id="resourceGroupNameTextField" promptText="Resource Group Name" layoutX="20.0" layoutY="60.0" />
+    <TextField fx:id="vmNameTextField" promptText="VM Name" layoutX="20.0" layoutY="100.0" />
+    <TextField fx:id="imageDefinitionPrefixTextField" promptText="Image Definition Prefix" layoutX="20.0" layoutY="140.0" />
+
+    <Button text="Capture" layoutX="20.0" layoutY="180.0" onAction="#captureButtonClicked" />
+
+</AnchorPane>

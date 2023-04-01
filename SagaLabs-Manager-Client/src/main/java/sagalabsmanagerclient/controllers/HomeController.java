@@ -1,5 +1,6 @@
 package sagalabsmanagerclient.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,6 +12,7 @@ import javafx.scene.shape.Rectangle;
 import sagalabsmanagerclient.AzureMethods;
 import sagalabsmanagerclient.Database;
 
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -23,6 +25,7 @@ public class HomeController extends MenuController {
     public void initialize() throws SQLException {
         VBox vbox = createLabsVBox();
         anchorHome.getChildren().add(vbox);
+
 
         super.initialize();
     }
@@ -69,9 +72,26 @@ public class HomeController extends MenuController {
         Button turnOffButton = createTurnOffButton(labName);
         // Add all the elements to the HBox
         hbox.getChildren().addAll(box, labelBox, turnOnButton, turnOffButton);
+
+        // Create a button to show the popup
+        Button showPopupButton = new Button("Capture Lab");
+        showPopupButton.setOnAction(event -> {
+            try {
+                CaptureLabPopUp.openCaptureLabPopup(labName); // Pass the resource group name to the method
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+        // Add the button to the HBox
+        hbox.getChildren().add(showPopupButton);
+
         // Return the created HBox containing lab information and controls
         return hbox;
     }
+
+
 
 
     private Rectangle createVpnStatusRectangle(boolean vpnRunning) {
@@ -130,6 +150,10 @@ public class HomeController extends MenuController {
         // Return the created button with the event handler
         return turnOffButton;
     }
+
+
+
+
 
 
 }

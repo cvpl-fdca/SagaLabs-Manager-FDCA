@@ -6,8 +6,8 @@ public enum View {
     HOME("Home.fxml"),
     SQLSCENE("Database.fxml"),
     VPN("Vpn.fxml"),
-    MACHINES("Machines.fxml");
-
+    MACHINES("Machines.fxml"),
+    CAPTURE_LAB_POPUP("CaptureLabPopUp.fxml");
 
     final private String fileName;
 
@@ -19,3 +19,4 @@ public enum View {
         return fileName;
     }
 }
+

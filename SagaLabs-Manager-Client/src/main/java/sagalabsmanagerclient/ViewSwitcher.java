@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import sagalabsmanagerclient.controllers.Controller;
 
@@ -49,7 +50,28 @@ public class ViewSwitcher {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
     }
+    public void openPopup(String fxmlFilePath, Class<? extends Controller> controllerClass) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlFilePath));
+            Parent root = loader.load();
+            Controller controller = loader.getController();
+            if (controllerClass.isInstance(controller)) {
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.setScene(scene);
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.showAndWait();
+            } else {
+                throw new IllegalArgumentException("Invalid controller class for FXML file: " + fxmlFilePath);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void closeThreads() {
         controller.closeRefreshingThreads();
     }
