@@ -1,5 +1,8 @@
 package sagalabsmanagerclient.controllers;
 
+import java.awt.Desktop;
+import java.io.File;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import javafx.application.Platform;
@@ -124,7 +127,28 @@ public class VPNController extends MenuController {
             {
                 // Set the action handlers for each button
                 revokeBtn.setOnAction(e -> handleRevokeButton(getIndex()));
-                downloadBtn.setOnAction(e -> handleDownloadButton(getIndex()));
+                downloadBtn.setOnAction(e -> {
+                    String downloadedFilePath = handleDownloadButton(getIndex());
+                    if (downloadedFilePath != null) {
+                        try {
+                            // Get the file path
+                            File downloadedFile = new File(downloadedFilePath);
+
+                            // Get the desktop instance
+                            Desktop desktop = Desktop.getDesktop();
+
+                            // Check if the platform supports the browseFileDirectory feature
+                            if (desktop.isSupported(Desktop.Action.BROWSE_FILE_DIR)) {
+                                desktop.browseFileDirectory(downloadedFile);
+                            } else {
+                                // Fallback to open the file if the platform doesn't support the browseFileDirectory feature
+                                desktop.open(downloadedFile.getParentFile());
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
+                        }
+                    }
+                });
                 deleteBtn.setOnAction(e -> {
                     try {
                         handleDeleteButton(getIndex());
@@ -178,16 +202,19 @@ public class VPNController extends MenuController {
      * Handles the action for the download button.
      * @param index The index of the selected item in the TableView.
      */
-    private void handleDownloadButton(int index) {
+    private String handleDownloadButton(int index) {
         JsonObject vpnUser = userVpnTableView.getItems().get(index);
         String vpnIp = vpnUser.get("vpnIp").getAsString();
         String username = vpnUser.get("Identity").getAsString();
+        String downloadedFilePath = null;
         try {
-            vpnServiceConnection.downloadConfig(vpnIp, username);
+            downloadedFilePath = vpnServiceConnection.downloadConfig(vpnIp, username);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+        return downloadedFilePath;
     }
+
     /**
      * Handles the action for the delete button.
      * @param index The index of the selected item in the TableView.

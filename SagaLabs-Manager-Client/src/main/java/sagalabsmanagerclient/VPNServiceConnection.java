@@ -88,11 +88,12 @@ public class VPNServiceConnection {
         System.out.println(sendPostRequestWithUsername(apiUrl, username));
     }
 
-    public void downloadConfig(String vpnIp, String username) throws IOException {
+    public String downloadConfig(String vpnIp, String username) throws IOException {
         String apiUrl = "http://" + vpnIp + "/api/user/config/show";
         String configFileContent = sendPostRequestWithUsername(apiUrl, username);
-        saveConfigFile(username, configFileContent);
+        return saveConfigFile(username, configFileContent);
     }
+
 
     public void revokeCertificate(String vpnIp, String username) throws IOException {
         String apiUrl = "http://" + vpnIp + "/api/user/revoke";
@@ -157,12 +158,30 @@ public class VPNServiceConnection {
         return responseStream.toString(StandardCharsets.UTF_8);
     }
 
-    private void saveConfigFile(String username, String configFileContent) throws IOException {
-        File outputFile = new File(username + ".ovpn");
+    private String saveConfigFile(String username, String configFileContent) throws IOException {
+        String userHome = System.getProperty("user.home");
+        String downloadsPath;
+        String osName = System.getProperty("os.name").toLowerCase();
+
+        if (osName.contains("win")) {
+            downloadsPath = userHome + "\\Downloads\\" + username + ".ovpn";
+        } else if (osName.contains("mac")) {
+            downloadsPath = userHome + "/Downloads/" + username + ".ovpn";
+        } else if (osName.contains("linux") || osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            downloadsPath = userHome + "/Downloads/" + username + ".ovpn";
+        } else {
+            throw new UnsupportedOperationException("Unsupported operating system: " + osName);
+        }
+
+        File outputFile = new File(downloadsPath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
             writer.write(configFileContent);
         }
+        return outputFile.getAbsolutePath();
     }
+
+
+
     public ArrayList<JsonObject> getVpnUserJsonList() {
         return vpnUserJsonList;
     }
